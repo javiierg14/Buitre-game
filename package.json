@@ -1,0 +1,27 @@
+{
+  "name": "buitre-game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Prototipo de personaje 3D procedural en Three.js — El Buitre",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "typecheck": "tsc --noEmit",
+    "shot": "node scripts/capture.mjs",
+    "inspect": "node scripts/inspect-canvas.mjs",
+    "verify": "npm run typecheck && npm run build && npm run shot && npm run inspect"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/three": "^0.180.0",
+    "playwright": "^1.49.0",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}
