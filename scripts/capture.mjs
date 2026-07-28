@@ -103,7 +103,17 @@ try {
     await page.evaluate(() => new Promise(requestAnimationFrame));
 
     const name = `${shot.state}-${shot.framing}.png`;
-    const buf = await page.locator('#stage').screenshot();
+    // Se lee el canvas, no se hace screenshot del elemento. `locator.screenshot`
+    // espera a que el nodo esté "estable" y en SwiftShader una escena pesada
+    // nunca lo está: el reloj queda congelado pero el compositor sigue
+    // repintando, y la captura vence por timeout. `toDataURL` es exacto y no
+    // depende del compositor — el renderer ya arranca con preserveDrawingBuffer
+    // cuando la URL trae `capture`.
+    const dataUrl = await page.evaluate(() => {
+      const el = document.getElementById('stage');
+      return el.toDataURL('image/png');
+    });
+    const buf = Buffer.from(dataUrl.slice('data:image/png;base64,'.length), 'base64');
     await writeFile(join(OUT, name), buf);
     written.push(name);
     process.stdout.write(`  ${name}\n`);
