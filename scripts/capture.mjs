@@ -27,7 +27,19 @@ const SEED = Number(args.seed ?? 1234);
 const WARM = Number(args.warm ?? 30);
 
 /** El set por defecto: cada fila es una lectura distinta del personaje. */
-const DEFAULT_SET = [
+const SCENE = args.scene ?? 'figure';
+
+const FIGURE_SET = [
+  { state: 'casual', framing: 'retrato' },
+  { state: 'casual', framing: 'busto' },
+  { state: 'casual', framing: 'perfilFigura' },
+  { state: 'casual', framing: 'tresCuartos' },
+  { state: 'casual', framing: 'entera' },
+  { state: 'dress', framing: 'entera' },
+  { state: 'dress', framing: 'espalda' },
+];
+
+const BUITRE_SET = [
   { state: 'perch', framing: 'hero' },
   { state: 'perch', framing: 'profile' },
   { state: 'perch', framing: 'front' },
@@ -37,6 +49,8 @@ const DEFAULT_SET = [
   { state: 'threat', framing: 'hero' },
   { state: 'threat', framing: 'front' },
 ];
+
+const DEFAULT_SET = SCENE === 'buitre' ? BUITRE_SET : FIGURE_SET;
 
 const server = await startServer(PORT);
 let browser;
@@ -55,7 +69,7 @@ try {
     if (m.type() === 'error') errors.push(m.text());
   });
 
-  await page.goto(`http://127.0.0.1:${PORT}/?capture&deterministic&seed=${SEED}&q=high`, { waitUntil: 'load' });
+  await page.goto(`http://127.0.0.1:${PORT}/?capture&deterministic&seed=${SEED}&q=high&scene=${SCENE}`, { waitUntil: 'load' });
   await page.waitForFunction('!!window.__BUITRE__', null, { timeout: 30000 });
 
   await mkdir(OUT, { recursive: true });
